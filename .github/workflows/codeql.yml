@@ -20,7 +20,7 @@ jobs:
       with:
         dotnet-version: '6.x' # Adjust the .NET version as needed
 
-    - name: Install CodeQL CLI
+    - name: Set up CodeQL
       uses: github/codeql-action/setup-codeql@v2
       with:
         languages: csharp
