@@ -1,0 +1,43 @@
+name: CodeQL
+
+on:
+  push:
+    branches: [main] # Adjust the branch name as needed
+  pull_request:
+    branches: [main] # Adjust the branch name as needed
+
+jobs:
+  analyze:
+    name: Analyze
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.x' # Adjust the .NET version as needed
+
+    - name: Install CodeQL CLI
+      uses: github/codeql-action/setup-codeql@v2
+      with:
+        languages: csharp
+
+    - name: Build .NET project
+      run: dotnet build --no-restore
+
+    - name: Initialize CodeQL database
+      run: codeql database create my-dotnet-db --language=cs --source-root=.
+
+    - name: Run CodeQL analysis
+      run: |
+        codeql database analyze my-dotnet-db --format=sarifv2.1.0 --output=codeql-results.sarif
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    - name: Upload CodeQL results
+      uses: github/codeql-action/upload-sarif@v2
+      with:
+        sarif_file: codeql-results.sarif
