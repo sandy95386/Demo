@@ -1,0 +1,50 @@
+using System;
+using System.Data.SqlClient;
+
+class Program
+{
+    static void Main()
+    {
+        string userInput = "someUserInput"; // Simulate user input
+        string query = "SELECT * FROM Users WHERE Username = '" + userInput + "'"; // SQL Injection vulnerability
+
+        using (SqlConnection conn = new SqlConnection("your_connection_string"))
+        {
+            SqlCommand cmd = new SqlCommand(query, conn);
+            conn.Open();
+            SqlDataReader reader = cmd.ExecuteReader();
+            while (reader.Read())
+            {
+                Console.WriteLine(reader["Username"].ToString());
+            }
+        }
+    }
+}
+class Program
+{
+    static void Main()
+    {
+        string userInput = "someUserInput"; // Simulate user input
+        string response = "<html><body>Hello, " + userInput + "</body></html>"; // XSS vulnerability
+
+        HttpContext.Current.Response.Write(response);
+    }
+}
+class User
+{
+    public string Name { get; set; }
+}
+
+class Program
+{
+    static void Main()
+    {
+        byte[] data = File.ReadAllBytes("user_data.dat"); // Deserialize user data from file
+        BinaryFormatter formatter = new BinaryFormatter();
+        using (MemoryStream stream = new MemoryStream(data))
+        {
+            User user = (User)formatter.Deserialize(stream); // Insecure deserialization vulnerability
+            Console.WriteLine(user.Name);
+        }
+    }
+}
